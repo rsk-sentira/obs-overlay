@@ -88,7 +88,7 @@
         const char = data.find(c => c.name === selectedChar);
         if (!char) return;
 
-        document.getElementById("char-name").innerText = `ตัวละคร: ${char.name}`;
+        document.getElementById("char-name").innerText = `${char.name}`;
 
         updateBar("hp", char.hp.cur, char.hp.max);
         updateBar("mana", char.mana.cur, char.mana.max);
@@ -109,6 +109,7 @@
   </script>
 </body>
 </html>
+
 
 
 
