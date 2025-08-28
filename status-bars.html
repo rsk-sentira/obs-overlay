@@ -1,4 +1,52 @@
 <!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+body {
+background: transparent;
+margin: 0;
+font-family: "Sarabun", sans-serif; /* ฟอนต์ไทยอ่านง่าย */
+color: white;
+}
+
+
+.char-name {
+font-size: 20px;
+font-weight: bold;
+margin-bottom: 10px;
+text-align: center;
+text-shadow: 1px 1px 3px black;
+}
+
+
+.bar-container {
+width: 400px;
+height: 25px;
+border: 2px solid white;
+border-radius: 10px;
+overflow: hidden;
+margin-bottom: 10px;
+position: relative;
+}
+
+
+.bar-fill {
+height: 100%;
+width: 0%;
+transition: width 0.5s ease;
+}
+
+
+.label {
+position: absolute;
+width: 100%;
+text-align: center;
+top: 0;
+line-height: 25px;
+font-weight: bold;
+text-shadow: 1px 1px 3px black;
+}
 
 
 /* theme colors */
@@ -36,46 +84,4 @@
 <div id="hunger-bar" class="bar-fill hunger"></div>
 <div id="hunger-label" class="label">Hunger: 0 / 0</div>
 </div>
-
-
-<script>
-const SHEET_URL = "https://script.google.com/macros/s/AKfycbwpfZEtkTMmu_n7_Z4TuTn0LNPqO9jkQSji3ux5eRMCaV7XRbCVYYDZiPu2HMo3rD45ug/exec";
-
-
-// เลือกตัวละครผ่าน URL เช่น status-bars.html?char=Alice
-const urlParams = new URLSearchParams(window.location.search);
-const selectedChar = urlParams.get("char") || "Alice";
-
-
-async function fetchData() {
-try {
-const data = await fetch(SHEET_URL).then(r => r.json());
-const char = data.find(c => c.name === selectedChar);
-if (!char) return;
-
-
-document.getElementById("char-name").innerText = `ตัวละคร: ${char.name}`;
-
-
-updateBar("hp", char.hp.cur, char.hp.max);
-updateBar("mana", char.mana.cur, char.mana.max);
-updateBar("sta", char.sta.cur, char.sta.max);
-updateBar("hunger", char.hunger.cur, char.hunger.max);
-
-
-} catch(err) { console.error(err); }
-}
-
-
-function updateBar(type, cur, max) {
-const percent = max>0 ? Math.min(100,(cur/max)*100) : 0;
-document.getElementById(`${type}-bar`).style.width = percent+"%";
-document.getElementById(`${type}-label`).innerText = `${type.toUpperCase()}: ${cur} / ${max}`;
-}
-
-
-fetchData();
-setInterval(fetchData, 2000);
-</script>
-</body>
 </html>
