@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+
+
+/* theme colors */
+.hp { background: linear-gradient(90deg, crimson, darkred); }
+.mana { background: linear-gradient(90deg, dodgerblue, navy); }
+.sta { background: linear-gradient(90deg, gold, darkgoldenrod); }
+.hunger { background: linear-gradient(90deg, #FFA07A, #E75480); }
+</style>
+</head>
+<body>
+
+
+<div id="char-name" class="char-name">Character: ???</div>
+
+
+<div class="bar-container">
+<div id="hp-bar" class="bar-fill hp"></div>
+<div id="hp-label" class="label">HP: 0 / 0</div>
+</div>
+
+
+<div class="bar-container">
+<div id="mana-bar" class="bar-fill mana"></div>
+<div id="mana-label" class="label">MP: 0 / 0</div>
+</div>
+
+
+<div class="bar-container">
+<div id="sta-bar" class="bar-fill sta"></div>
+<div id="sta-label" class="label">STA: 0 / 0</div>
+</div>
+
+
+<div class="bar-container">
+<div id="hunger-bar" class="bar-fill hunger"></div>
+<div id="hunger-label" class="label">Hunger: 0 / 0</div>
+</div>
+
+
+<script>
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbwpfZEtkTMmu_n7_Z4TuTn0LNPqO9jkQSji3ux5eRMCaV7XRbCVYYDZiPu2HMo3rD45ug/exec";
+
+
+// เลือกตัวละครผ่าน URL เช่น status-bars.html?char=Alice
+const urlParams = new URLSearchParams(window.location.search);
+const selectedChar = urlParams.get("char") || "Alice";
+
+
+async function fetchData() {
+try {
+const data = await fetch(SHEET_URL).then(r => r.json());
+const char = data.find(c => c.name === selectedChar);
+if (!char) return;
+
+
+document.getElementById("char-name").innerText = `ตัวละคร: ${char.name}`;
+
+
+updateBar("hp", char.hp.cur, char.hp.max);
+updateBar("mana", char.mana.cur, char.mana.max);
+updateBar("sta", char.sta.cur, char.sta.max);
+updateBar("hunger", char.hunger.cur, char.hunger.max);
+
+
+} catch(err) { console.error(err); }
+}
+
+
+function updateBar(type, cur, max) {
+const percent = max>0 ? Math.min(100,(cur/max)*100) : 0;
+document.getElementById(`${type}-bar`).style.width = percent+"%";
+document.getElementById(`${type}-label`).innerText = `${type.toUpperCase()}: ${cur} / ${max}`;
+}
+
+
+fetchData();
+setInterval(fetchData, 2000);
+</script>
+</body>
+</html>
