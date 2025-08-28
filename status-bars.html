@@ -6,7 +6,7 @@
     body {
       background: transparent;
       margin: 0;
-      font-family: "Sarabun", sans-serif; /* ฟอนต์ไทยอ่านง่าย */
+      font-family: "Sarabun", sans-serif;
       color: white;
     }
 
@@ -46,7 +46,7 @@
 
     /* theme colors */
     .hp      { background: linear-gradient(90deg, darkred, crimson); }
-    .mp    { background: linear-gradient(90deg, navy, dodgerblue); }
+    .mp      { background: linear-gradient(90deg, navy, dodgerblue); }
     .sta     { background: linear-gradient(90deg, darkgoldenrod, gold); }
     .hunger  { background: linear-gradient(90deg, brown, orange); }
   </style>
@@ -78,7 +78,15 @@
   <script>
     const SHEET_URL = "https://script.google.com/macros/s/AKfycbwpfZEtkTMmu_n7_Z4TuTn0LNPqO9jkQSji3ux5eRMCaV7XRbCVYYDZiPu2HMo3rD45ug/exec";
 
-    // เลือกตัวละครผ่าน URL เช่น status-bars.html?char=Alice
+    // Mapping ชื่อ label
+    const labels = {
+      hp: "HP",
+      mp: "MP",
+      sta: "STA",
+      hunger: "Hunger"
+    };
+
+    // เลือกตัวละครผ่าน URL เช่น ?char=Alice
     const urlParams = new URLSearchParams(window.location.search);
     const selectedChar = urlParams.get("char") || "Alice";
 
@@ -88,34 +96,27 @@
         const char = data.find(c => c.name === selectedChar);
         if (!char) return;
 
-        document.getElementById("char-name").innerText = `${char.name}`;
+        document.getElementById("char-name").innerText = char.name;
 
         updateBar("hp", char.hp.cur, char.hp.max);
-        updateBar("mp", char.mp.cur, char.mp.max);
+        updateBar("mp", char.mana.cur, char.mana.max);
         updateBar("sta", char.sta.cur, char.sta.max);
         updateBar("hunger", char.hunger.cur, char.hunger.max);
 
-      } catch(err) { console.error(err); }
+      } catch(err) {
+        console.error(err);
+      }
     }
 
     function updateBar(type, cur, max) {
-      const percent = max>0 ? Math.min(100,(cur/max)*100) : 0;
-      document.getElementById(`${type}-bar`).style.width = percent+"%";
-      document.getElementById(`${type}-label`).innerText = `${type.toUpperCase()}: ${cur} / ${max}`;
+      const percent = max > 0 ? Math.min(100, (cur / max) * 100) : 0;
+      document.getElementById(`${type}-bar`).style.width = percent + "%";
+      document.getElementById(`${type}-label`).innerText = `${labels[type]}: ${cur} / ${max}`;
     }
 
+    // เรียกครั้งแรก + update ทุก 1 วิ
     fetchData();
     setInterval(fetchData, 1000);
   </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
